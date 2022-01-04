@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class CustomTextField1 extends StatelessWidget {
   CustomTextField1({Key? key, this.controller, this.hintText = ""})
       : super(key: key);
@@ -41,6 +42,7 @@ class CustomTextField1 extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class CustomTextField2 extends StatelessWidget {
   CustomTextField2({Key? key, this.controller, this.hintText = ""})
       : super(key: key);
@@ -56,7 +58,7 @@ class CustomTextField2 extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(17),
       child: Container(
-        color: Color.fromARGB(255, 168, 157, 143),
+        color: const Color.fromARGB(255, 168, 157, 143),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25),
           child: TextField(
@@ -65,14 +67,14 @@ class CustomTextField2 extends StatelessWidget {
             obscureText: true,
             decoration: InputDecoration(
               hintText: hintText,
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 fontSize: 17,
                 color: Colors.white,
               ),
               border: InputBorder.none,
               fillColor: Colors.white,
             ),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 17,
               color: Colors.white,
             ),
