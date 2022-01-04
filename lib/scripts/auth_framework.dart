@@ -4,13 +4,8 @@ import 'dart:convert';
 // Package imports
 import 'package:http/http.dart' as http;
 
-class Response {
-  final int statusCode;
-  final String? error;
-  final String? result;
-
-  Response({required this.statusCode, this.error, this.result});
-}
+// Models
+import '../models/auth_response.dart';
 
 class Auth {
   // ignore: constant_identifier_names
