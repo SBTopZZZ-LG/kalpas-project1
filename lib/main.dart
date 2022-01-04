@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 // Pages
-import './pages/loading.dart';
 import './pages/sign_in.dart';
-import './pages/sign_up.dart';
+
+// Scripts
+import './scripts/fas.dart';
 
 void main() {
+  SecureStore.initialize();
+
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
-    MaterialApp(
+    const MaterialApp(
       home: SignInPage(),
       debugShowCheckedModeBanner: false,
     ),

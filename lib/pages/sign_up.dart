@@ -3,20 +3,37 @@ import 'dart:ui';
 
 // Package imports
 import 'package:flutter/material.dart';
-import 'package:kalpas_project1/pages/sign_in.dart';
+
+// Pages
+import './loading.dart';
+
+// Scripts
+import '../scripts/auth_framework.dart';
 
 // Widgets
 import '../widgets/custom_tf.dart';
 
-class SignUpPage extends StatelessWidget {
-  SignUpPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> {
   // Controllers
   TextEditingController email = TextEditingController(),
-      password = TextEditingController();
+      password = TextEditingController(),
+      passwordConf = TextEditingController();
+
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: LoadingPage());
+    }
+
     return Scaffold(
       body: Stack(
         alignment: Alignment.bottomCenter,
@@ -99,12 +116,108 @@ class SignUpPage extends StatelessWidget {
                             ),
                             const SizedBox(height: 12),
                             CustomTextField2(
-                              hintText: "Re-enter Password:",
-                              controller: password,
-                            ),
+                                hintText: "Re-enter Password:",
+                                controller: passwordConf),
                             const SizedBox(height: 12),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                // Validate inputs
+                                RegExp emailRE =
+                                    RegExp(r'^[a-z0-9\.]+@[a-z0-9\.]+$');
+                                String email = this.email.text;
+
+                                if (!emailRE.hasMatch(email)) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Please enter a valid email address")));
+
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+
+                                  return;
+                                }
+
+                                String password = this.password.text;
+
+                                if (password.length < 5) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Password must be greater than 4 characters")));
+
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+
+                                  return;
+                                }
+
+                                String passwordConf = this.passwordConf.text;
+
+                                if (password != passwordConf) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              "Password confirmation failure")));
+
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+
+                                  return;
+                                }
+
+                                setState(() {
+                                  _isLoading = true;
+                                });
+
+                                // Perform api
+                                Auth.register(email, password, passwordConf)
+                                    .then((value) {
+                                  if (value.statusCode == 400) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Password confirmation failure")));
+
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+
+                                    return;
+                                  }
+
+                                  if (value.statusCode == 403) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Sorry, this email is already in use")));
+
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+
+                                    return;
+                                  }
+
+                                  if (value.statusCode != 200) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                "Unknown error occurred")));
+
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+
+                                    return;
+                                  }
+
+                                  Navigator.of(context).pop();
+                                });
+                              },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(
                                   vertical: 10,
