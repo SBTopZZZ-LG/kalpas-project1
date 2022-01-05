@@ -61,6 +61,9 @@ class _DashboardPageState extends State<DashboardPage> {
     // Call api
     News.getNews().then((news) {
       if (news == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Failed to fetch news")));
+
         return;
       }
 
